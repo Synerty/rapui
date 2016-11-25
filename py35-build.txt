@@ -1,0 +1,8 @@
+apt-get install libbz2-dev libcurl4-gnutls-dev samba-dev libsmbclient-dev libcups2-dev
+
+
+
+./configure --prefix=/home/peek/cpython-3.5.2/
+
+make -j 12 install
+

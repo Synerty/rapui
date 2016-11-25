@@ -1,0 +1,27 @@
+This project has many javascript dependencies, these are all loaded in via NPM.
+
+To load the dependences :
+First you must have a working install of NPM and NODE
+
+Run the following commands in the terminal
+
+1) cd to the rapui python package dir
+cd ../rapui/
+
+2) Install all the NPM packages
+npm install
+
+# To Run web pack
+webpack
+
+# To make a prod build,
+npm run build
+
+# To run karma tests
+rpm test
+
+Thats it. PyCharm should monitor changes to the RapUI TypeScript files and webpack them.
+All other project files, not in RapUI will be loaded on demand.
+
+Or just run the DEV server
+npm start
