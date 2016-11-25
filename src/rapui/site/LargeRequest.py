@@ -1,3 +1,12 @@
+"""
+ * Created by Synerty Pty Ltd
+ *
+ * This software is open source, the MIT license applies.
+ *
+ * Website : http://www.synerty.com
+ * Support : support@synerty.com
+"""
+
 import logging
 import tempfile
 from io import BytesIO
@@ -6,7 +15,7 @@ from twisted.web import server
 
 from rapui.site.ResourceUtil import LARGE_REQUEST_PATHS
 
-logger = logging.getLogger(name="largerequest")
+logger = logging.getLogger(name=__name__)
 
 
 class LargeRequest(server.Request):

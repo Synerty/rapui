@@ -1,18 +1,11 @@
-""" 
- * SynENCONF.view.Root.py
- *
- *  Copyright Synerty Pty Ltd 2013
- *
- *  This software is proprietary, you are not free to copy
- *  or redistribute this code in any format.
- *
- *  All rights to this software are reserved by 
- *  Synerty Pty Ltd
- *
 """
-from typing import Generator
-
-
+ * Created by Synerty Pty Ltd
+ *
+ * This software is open source, the MIT license applies.
+ *
+ * Website : http://www.synerty.com
+ * Support : support@synerty.com
+"""
 
 
 def filterModules(name_:str, file_: str) -> [str]:

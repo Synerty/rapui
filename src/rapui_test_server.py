@@ -1,21 +1,18 @@
-""" 
- * synlacky_server.py
- *
- *  Copyright Synerty Pty Ltd 2013
- *
- *  This software is proprietary, you are not free to copy
- *  or redistribute this code in any format.
- *
- *  All rights to this software are reserved by 
- *  Synerty Pty Ltd
- *
 """
+ * Created by Synerty Pty Ltd
+ *
+ * This software is open source, the MIT license applies.
+ *
+ * Website : http://www.synerty.com
+ * Support : support@synerty.com
+"""
+
 import logging
 import sys
 
 from twisted.internet import reactor, defer
 
-from rapui.site.Site import setupSite
+from rapui.site.SiteUtil import setupSite
 
 
 def main():
@@ -34,9 +31,8 @@ def main():
     logger = logging.getLogger(name="rapui_server")
 
     port = 8000
-    setupSite(port, testSuite=True, debug=True)
+    setupSite("RapUI Test Siteport")
 
-    logger.info('RapUI alive and listening on port %s' % port)
     reactor.run()
 
 

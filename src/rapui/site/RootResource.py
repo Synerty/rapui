@@ -1,8 +1,12 @@
-'''
-Created on 05/06/2013
+"""
+ * Created by Synerty Pty Ltd
+ *
+ * This software is open source, the MIT license applies.
+ *
+ * Website : http://www.synerty.com
+ * Support : support@synerty.com
+"""
 
-@author: darkstar
-'''
 from twisted.web.resource import NoResource
 
 from rapui import rapuiRootStaticResources

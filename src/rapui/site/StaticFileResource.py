@@ -1,14 +1,24 @@
+"""
+ * Created by Synerty Pty Ltd
+ *
+ * This software is open source, the MIT license applies.
+ *
+ * Website : http://www.synerty.com
+ * Support : support@synerty.com
+"""
+
 import os
 from collections import namedtuple
 from datetime import date, timedelta
 from time import mktime
 from wsgiref.handlers import format_date_time
 
-from rapui.DeferUtil import deferToThreadWrap
+import logging
+
 from rapui.site.ResourceUtil import RapuiResource
+from rapui.util.DeferUtil import deferToThreadWrap
 
-
-
+logger = logging.getLogger(__name__)
 
 class FileResource(RapuiResource):
     """

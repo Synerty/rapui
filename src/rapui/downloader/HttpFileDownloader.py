@@ -1,6 +1,15 @@
+"""
+ * Created by Synerty Pty Ltd
+ *
+ * This software is open source, the MIT license applies.
+ *
+ * Website : http://www.synerty.com
+ * Support : support@synerty.com
+"""
+
 import logging
 
-from rapui.util.Directory import Directory
+from pydirectory.Directory import Directory
 from twisted.internet import reactor
 from twisted.internet.defer import Deferred
 from twisted.internet.protocol import Protocol
@@ -11,12 +20,7 @@ from twisted.web.http_headers import Headers
 logger = logging.getLogger(__name__)
 
 
-def rapuiHttpFileDownloader(url):
-    downloader = RapuiHttpFileDownloader(url)
-    return downloader.run()
-
-
-class RapuiHttpFileDownloader:
+class HttpFileDownloader:
     def __init__(self, url):
         self._url = url
 

@@ -1,27 +1,16 @@
-""" 
- * Renderers.py
- *
- *  Copyright Synerty Pty Ltd 2013
- *
- *  This software is proprietary, you are not free to copy
- *  or redistribute this code in any format.
- *
- *  All rights to this software are reserved by 
- *  Synerty Pty Ltd
- *
 """
+ * Created by Synerty Pty Ltd
+ *
+ * This software is open source, the MIT license applies.
+ *
+ * Website : http://www.synerty.com
+ * Support : support@synerty.com
+"""
+
 import logging
-import os
-from collections import namedtuple
-from datetime import date, timedelta
-from time import mktime
-from wsgiref.handlers import format_date_time
 
-from twisted.internet.task import cooperate
 from twisted.web.resource import Resource, EncodingResourceWrapper
-from twisted.web.server import GzipEncoderFactory, NOT_DONE_YET
-
-from rapui.DeferUtil import deferToThreadWrap
+from twisted.web.server import GzipEncoderFactory
 
 logger = logging.getLogger(__name__)
 

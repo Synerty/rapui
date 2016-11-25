@@ -1,15 +1,18 @@
+"""
+ * Created by Synerty Pty Ltd
+ *
+ * This software is open source, the MIT license applies.
+ *
+ * Website : http://www.synerty.com
+ * Support : support@synerty.com
+"""
+
 import logging
 
 import os
 from os import path as p
 
 logger = logging.getLogger(__name__)
-
-TEMPLATE_SUBDIR = 'template'
-STYLE_SUBDIR = 'style'
-JAVASCRIPT_SUBDIR = 'javascript'
-IMAGE_SUBDIR = 'image'
-
 
 class RapuiStaticResources(object):
     ''' RapUI Web Resources
@@ -29,12 +32,9 @@ class RapuiStaticResources(object):
 
     '''
 
-    def __init__(self):
-        self._templatePaths = []
-        self._javascriptPaths = []
-        self._stylePaths = []
-        self._fontPaths = []
-        self._imagePaths = []
+    def __init__(self, rootPath, groupPermissionsMap):
+        self._rootPath = rootPath
+        self._groupPermissionsMap = groupPermissionsMap
 
     def addStaticResourceDir(self, dir):
 

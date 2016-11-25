@@ -1,16 +1,20 @@
+"""
+ * Created by Synerty Pty Ltd
+ *
+ * This software is open source, the MIT license applies.
+ *
+ * Website : http://www.synerty.com
+ * Support : support@synerty.com
+"""
+
 import logging
 
-import sys
 
-
-def setup():
+def setupLogging():
 
     logging.basicConfig(format='%(asctime)s %(levelname)s %(name)s:%(message)s'
                         , datefmt='%d-%b-%Y %H:%M:%S'
                         , level=logging.DEBUG)
-
-    # logging.getLogger('rapui.site.JavascriptResource').setLevel(logging.INFO)
-    # logging.getLogger('rapui.site.StyleResource').setLevel(logging.INFO)
 
     logging.getLogger('suds.client').setLevel(logging.INFO)
     logging.getLogger('suds.transport').setLevel(logging.INFO)
