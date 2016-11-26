@@ -7,42 +7,22 @@
  * Support : support@synerty.com
 """
 
-from twisted.web.resource import NoResource
-
-from rapui import rapuiRootStaticResources
-from rapui.site.ResourceUtil import RapuiResource, RESOURCES
-
-
-class RootResource(RapuiResource):
-    pass
+from rapui.site.ResourceUtil import RESOURCES
+from rapui.site.StaticFileResource import StaticFileResource
+from rapui.site.StaticFileMultiPath import StaticFileMultiPath
+from rapui.site.AuthUserDetails import AuthUserDetails
 
 
-def createRootResource(userAccess):
-    rootResource = RootResource(userAccess)
+class RootResource(StaticFileResource):
+    """ Root Resource
 
-    rapuiRootStaticResources.addToResource(rootResource, userAccess)
+    This resource is the root or subroot of a resource tree.
+    It first looks for resources created with "createRoot
+    """
 
+
+def createRootResource(userAccess: AuthUserDetails, staticFileRoot: StaticFileMultiPath):
+    rootResource = RootResource(userAccess, staticFileRoot=staticFileRoot)
     callResourceCreators(RESOURCES, rootResource, userAccess)
 
     return rootResource
-
-
-def callResourceCreators(resourceCreatorByPath,
-                         rootResource,
-                         userAccess):
-
-    # Put all the child resources in
-    resources = [(key.strip(b'/').split(b'/'), value)
-                 for key, value in list(resourceCreatorByPath.items())]
-    resources.sort(key=lambda x: len(x[0]))
-    for paths, resourceCreator in resources:
-        parentResource = rootResource
-        paths.reverse()
-        name = paths.pop()
-        while paths:
-            path = paths.pop()
-            if path in parentResource.children:
-                parentResource.children[path]
-            else:
-                parentResource.putChild(path, NoResource())
-        parentResource.putChild(name, resourceCreator(userAccess))

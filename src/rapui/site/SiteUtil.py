@@ -13,14 +13,19 @@ from twisted.internet import reactor
 from twisted.web import server
 from twisted.web.http import HTTPChannel
 
+from rapui.login_page.RapuiLoginElement import RapuiLoginElement
+from rapui.site.AuthCredentials import AllowAllAuthCredentials, AuthCredentials
+from rapui.site.AuthRealm import RapuiAuthSessionWrapper
 from rapui.site.LargeRequest import LargeRequest
-from rapui.site.RootResource import createRootResource
-from rapui.site.UserAccess import UserAccess
+from rapui.site.RapuiResource import RapuiResource
 
 logger = logging.getLogger(__name__)
 
 
-def setupSite(name, portNum=0, protectedResource=None):
+def setupSite(name: str,
+              rootResource: RapuiResource,
+              portNum: int = 8000,
+              credentialChecker: AuthCredentials = AllowAllAuthCredentials()):
     ''' Setup Site
     Sets up the web site to listen for connections and serve the site.
     Supports customisation of resources based on user details
@@ -28,11 +33,9 @@ def setupSite(name, portNum=0, protectedResource=None):
     @return: Port object
     '''
 
-    if not protectedResource:
-        userAccess = UserAccess()
-        userAccess.loggedIn = True
-        userAccess.readOnly = False
-        protectedResource = createRootResource(userAccess)
+    RapuiLoginElement.siteName = name
+
+    protectedResource = RapuiAuthSessionWrapper(rootResource, credentialChecker)
 
     site = server.Site(protectedResource)
     site.protocol = HTTPChannel

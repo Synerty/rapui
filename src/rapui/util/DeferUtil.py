@@ -9,6 +9,7 @@
 
 import logging
 
+from twisted.internet.defer import maybeDeferred
 from twisted.internet.threads import deferToThread
 
 logger = logging.getLogger()
@@ -29,3 +30,13 @@ def deferToThreadWrap(funcToWrap):
 
     return func
 
+
+def maybeDeferredWrap(funcToWrap):
+    """ Maybe Deferred Wrap
+
+    A decorator that ensures a function will return a deferred.
+
+    """
+    def func(*args, **kwargs):
+        return maybeDeferred(funcToWrap, *args, **kwargs)
+    return func

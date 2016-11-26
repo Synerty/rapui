@@ -8,10 +8,13 @@
 """
 
 import logging
+import os
 import sys
 
 from twisted.internet import reactor, defer
+from twisted.web.resource import ErrorPage
 
+from rapui.site.RapuiResource import FileUnderlayResource
 from rapui.site.SiteUtil import setupSite
 
 
@@ -30,8 +33,13 @@ def main():
 
     logger = logging.getLogger(name="rapui_server")
 
+    rootResource = FileUnderlayResource()
+    rootResource.addFileSystemRoot(os.path.dirname(__file__)) # Add here as a test
+
+    rootResource.putChild(b"test", ErrorPage(200, "This path worked, /test", ""))
+
     port = 8000
-    setupSite("RapUI Test Siteport")
+    setupSite("RapUI Test Siteport", rootResource)
 
     reactor.run()
 
