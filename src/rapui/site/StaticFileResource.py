@@ -22,99 +22,98 @@ from rapui.util.DeferUtil import deferToThreadWrap
 
 logger = logging.getLogger(__name__)
 
+FileData = namedtuple("FileData", ["fobj", "size", "cacheControl", "expires"])
+
 
 class StaticFileResource(RapuiResource):
     """
     """
     isLeaf = True
 
-    def __init__(self, filePath: str):
+    def __init__(self, filePath: str,
+                 expireMinutes: int = 30,
+                 chunkSize: int = 128000):
         RapuiResource.__init__(self)
         self._filePath = filePath
+        self.cancelDownload = False
+        self.expireMinutes = expireMinutes
+        self.chunkSize = chunkSize
 
     def render_GET(self, request):
         # request.responseHeaders.setRawHeaders('content-type', ['text/css'])
         return self.serveStaticFileWithCache(request)
 
-    def serveStaticFileWithCache(self, request,
-                                 expireMinutes: int = 30,
-                                 chunkSize: int = 128000):
+    def serveStaticFileWithCache(self, request):
         ''' Resource Create And Serve Static File
 
         This should probably be a class now.
 
         '''
-        FileData = namedtuple("FileData", ["fobj", "size", "cacheControl", "expires"])
 
-        class Closure:
-            cancelDownload = False
+        d = self.loadFileInThread(request)
+        d.addCallback(self._setHeaders, request)
+        d.addCallback(self._writeData, request)
+        d.addErrback(self._fileFailed, request)
 
-        if Closure.cancelDownload:
-            print((Closure.cancelDownload))
-
-        @deferToThreadWrap
-        def loadFileInThread():
-            requestPath = request.path
-            if not self._filePath or not os.path.exists(self._filePath):
-                raise Exception("File %s doesn't exist for resource %s"
-                                % (self._filePath, requestPath))
-
-            size = os.stat(self._filePath).st_size
-            fobj = open(self._filePath, 'rb')
-
-            expiry = (date.today() + timedelta(expireMinutes)).timetuple()
-            expiresTime = format_date_time(mktime(expiry))
-
-            cacheControl = "max-age=" + str(expireMinutes * 60)  # In Seconds
-            cacheControl += ", private"
-
-            return FileData(fobj=fobj, size=size,
-                            cacheControl=cacheControl, expires=expiresTime)
-
-        def setHeaders(fileData):
-            # DISABLED
-            # Cache control is disabled for gziped resources as they are chunk-encoded
-            # request.setHeader("Cache-Control", fileData.cacheControl)
-            # request.setHeader("Expires", fileData.expires)
-            request.setHeader("Content-Length", fileData.size)
-            return fileData
-
-        def writeData(fileData):
-            def writer():
-                try:
-                    data = fileData.fobj.read(chunkSize)
-                    while data and not Closure.cancelDownload:
-                        request.write(data)
-                        yield None  # Yield to the reactor for a bit
-                        data = fileData.fobj.read(chunkSize)
-                    request.finish()
-                    fileData.fobj.close()
-                except Exception as e:
-                    logger.error("An error occured loading and sending the file"
-                                 " data for file %s for resource %s",
-                                 fileNamePath, request.path)
-                    logger.exception(e)
-
-            return cooperate(writer())
-
-        def fileFailed(failure):
-            Closure.cancelDownload = True
-            request.setResponseCode(404)
-            logger.error(str(failure.value))
-            request.finish()
-
-            logger.error("Failed to send file %s for resource %s", fileNamePath,
-                         request.path)
-            logger.exception(failure.value)
-
-        def closedError(failure):
-            logger.error("Got closedError %s" % failure)
-
-        d = loadFileInThread()
-        d.addCallback(setHeaders)
-        d.addCallback(writeData)
-        d.addErrback(fileFailed)
-
-        request.notifyFinish().addErrback(closedError)
+        request.notifyFinish().addErrback(self._closedError)
 
         return NOT_DONE_YET
+
+    @deferToThreadWrap
+    def loadFileInThread(self, request):
+        requestPath = request.path
+        if not self._filePath or not os.path.exists(self._filePath):
+            raise Exception("File %s doesn't exist for resource %s"
+                            % (self._filePath, requestPath))
+
+        size = os.stat(self._filePath).st_size
+        fobj = open(self._filePath, 'rb')
+
+        expiry = (date.today() + timedelta(self.expireMinutes)).timetuple()
+        expiresTime = format_date_time(mktime(expiry))
+
+        cacheControl = b"max-age=" + str(self.expireMinutes * 60).encode()  # In Seconds
+        cacheControl += b", private"
+
+        return FileData(fobj=fobj, size=size,
+                        cacheControl=cacheControl, expires=expiresTime)
+
+    def _setHeaders(self, fileData, request):
+        # DISABLED
+        # Cache control is disabled for gziped resources as they are chunk-encoded
+        # request.setHeader("Cache-Control", fileData.cacheControl)
+        # request.setHeader("Expires", fileData.expires)
+        request.setHeader(b"Content-Length", fileData.size)
+        return fileData
+
+    def _writeData(self, fileData, request):
+        def writer():
+            try:
+                data = fileData.fobj.read(self.chunkSize)
+                while data and not self.cancelDownload:
+                    request.write(data)
+                    yield None  # Yield to the reactor for a bit
+                    data = fileData.fobj.read(self.chunkSize)
+                request.finish()
+                fileData.fobj.close()
+            except Exception as e:
+                logger.error("An error occured loading and sending the file"
+                             " data for file %s for resource %s",
+                             self._filePath, request.path)
+                logger.exception(e)
+
+        return cooperate(writer())
+
+    def _fileFailed(self, failure, request):
+        self.cancelDownload = True
+        request.setResponseCode(404)
+        logger.error(str(failure.value))
+        request.finish()
+
+        logger.error("Failed to send file %s for resource %s", self._filePath,
+                     request.path)
+        logger.exception(failure.value)
+
+    def _closedError(self, failure):
+        self.cancelDownload = True
+        logger.error("Got closedError %s" % failure)
