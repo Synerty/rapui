@@ -16,6 +16,7 @@ from twisted.web.resource import ErrorPage
 
 from rapui.site.FileUnderlayResource import FileUnderlayResource
 from rapui.site.SiteUtil import setupSite
+from rapui.util.LoggingUtil import setupLogging
 
 testUnicode = '''
 double hyphen :-( — “fancy quotes”
@@ -23,25 +24,13 @@ double hyphen :-( — “fancy quotes”
 
 def main():
     defer.setDebugging(True)
-
-    # import pydevd
-    # pydevd.settrace(suspend=False)
-
-
-    # Setup the logger AFTER the alembic migration.
-    logging.basicConfig(format='%(asctime)s %(levelname)s:%(name)s:%(message)s'
-                        , datefmt='%d-%b-%Y %H:%M:%S'
-                        , level=logging.DEBUG
-                        , stream=sys.stdout)
-
-    logger = logging.getLogger(name="rapui_server")
+    setupLogging()
 
     rootResource = FileUnderlayResource()
     rootResource.addFileSystemRoot(os.path.dirname(__file__)) # Add here as a test
 
     rootResource.putChild(b"test", ErrorPage(200, "This path worked, /test", ""))
 
-    port = 8000
     setupSite("RapUI Test Siteport", rootResource)
 
     reactor.run()

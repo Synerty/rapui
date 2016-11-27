@@ -8,8 +8,8 @@
 """
 
 import logging
+from typing import Union
 
-from pydirectory.Directory import Directory
 from twisted.internet import reactor
 from twisted.internet.defer import Deferred
 from twisted.internet.protocol import Protocol
@@ -17,25 +17,29 @@ from twisted.web._newclient import ResponseDone
 from twisted.web.client import Agent
 from twisted.web.http_headers import Headers
 
+from rapui.site.SpooledNamedTemporaryFile import SpooledNamedTemporaryFile
+
 logger = logging.getLogger(__name__)
 
 
 class HttpFileDownloader:
-    def __init__(self, url):
-        self._url = url
+    def __init__(self, url: Union[str, bytes],
+                 tmpDir: str = None):
+        self._tmpDir = tmpDir
+        self._url = url.encode() if isinstance(url, str) else url
 
     def run(self):
         agent = Agent(reactor)
 
         d = agent.request(
-            'GET',
+            b'GET',
             self._url,
-            Headers({'User-Agent': ['Synerty File Downloader']}),
+            Headers({b'User-Agent': [b'Synerty File Downloader']}),
             None)
 
         def cbResponse(response):
             if response.code == 200:
-                bodyDownloader = _RapuiHttpFileDownloaderBody()
+                bodyDownloader = _RapuiHttpFileDownloaderBody(self._tmpDir)
             else:
                 bodyDownloader = _RapuiHttpBodyError(response.code,
                                                      response.request.absoluteURI)
@@ -48,25 +52,26 @@ class HttpFileDownloader:
 
 
 class _RapuiHttpFileDownloaderBody(Protocol):
-    def __init__(self):
+    def __init__(self, tmpDir: str = None):
         self._finishedDeferred = Deferred()
-        self._directory = Directory()
-        self._tmpFile = self._directory.createFile(name="downloadedFile")
-        self._openedFobj = self._tmpFile.open(append=True)
+        self._tmpFile = SpooledNamedTemporaryFile(dir=tmpDir)
+        self._writeSize = 0
 
     @property
     def deferred(self):
         return self._finishedDeferred
 
-    def dataReceived(self, bytes):
-        self._openedFobj.write(bytes)
+    def dataReceived(self, data: bytes):
+        self._tmpFile.write(data)
+        self._writeSize += len(data)
 
     def connectionLost(self, reason):
-        self._openedFobj.close()
+        self._tmpFile.flush()
+        self._tmpFile.seek(0)
 
         if isinstance(reason.value, ResponseDone):
-            logger.debug('File download complete, size=%s', self._tmpFile.size)
-            self._finishedDeferred.callback((self._directory, self._tmpFile))
+            logger.debug('File download complete, size=%s', self._writeSize)
+            self._finishedDeferred.callback(self._tmpFile)
             return
 
         self._finishedDeferred.errback(reason)
@@ -88,6 +93,6 @@ class _RapuiHttpBodyError(Protocol):
 
     def connectionLost(self, reason):
         self._finishedDeferred.errback(Exception("Server returned %s for %s\n%s\n%s"
-                              % (self._responseCode, self._responseUri,
-                                                 reason,
-                                                 self._msg)))
+                                                 % (self._responseCode, self._responseUri,
+                                                    reason,
+                                                    self._msg)))

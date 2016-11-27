@@ -21,6 +21,7 @@ def get_extensions_for_type(general_type):
 IMAGE_EXTENSIONS = list(get_extensions_for_type('image'))
 FONT_EXTENSIONS = list(get_extensions_for_type('font'))
 
+
 class FileUnderlayResource(RapuiResource):
     """
     This class resolves URLs into either a static file or a C{RapuiRequestDynamicRenderer}
@@ -60,13 +61,13 @@ class FileUnderlayResource(RapuiResource):
 
         return NoResource()
 
-    def addFileSystemRoot(self, fileSystemRoot:str):
+    def addFileSystemRoot(self, fileSystemRoot: str):
         if not os.path.isdir(fileSystemRoot):
             raise NotADirectoryError("%s is not a directory" % fileSystemRoot)
 
         self._fileSystemRoots.append(fileSystemRoot)
 
-    def getRealFilePath(self, resourcePath: bytes) -> bytes:
+    def getRealFilePath(self, resourcePath: str) -> str:
 
         for rootDir in self._fileSystemRoots[::-1]:
             realFilePath = os.path.join(rootDir, resourcePath.decode())

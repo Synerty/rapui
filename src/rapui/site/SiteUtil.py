@@ -16,7 +16,7 @@ from twisted.web.http import HTTPChannel
 from rapui.login_page.RapuiLoginElement import RapuiLoginElement
 from rapui.site.AuthCredentials import AllowAllAuthCredentials, AuthCredentials
 from rapui.site.AuthRealm import RapuiAuthSessionWrapper
-from rapui.site.LargeRequest import LargeRequest
+from rapui.site.FileUploadRequest import FileUploadRequest
 from rapui.site.RapuiResource import RapuiResource
 
 logger = logging.getLogger(__name__)
@@ -39,12 +39,12 @@ def setupSite(name: str,
 
     site = server.Site(protectedResource)
     site.protocol = HTTPChannel
-    site.requestFactory = LargeRequest
+    site.requestFactory = FileUploadRequest
 
-    port = reactor.listenTCP(portNum, site).port
+    sitePort = reactor.listenTCP(portNum, site)
 
     import subprocess
     ip = subprocess.getoutput("/sbin/ifconfig").split("\n")[1].split()[1][5:]
 
-    logger.info('%s is alive and listening on http://%s:%s', name, ip, port)
-    return port
+    logger.info('%s is alive and listening on http://%s:%s', name, ip, sitePort.port)
+    return sitePort
