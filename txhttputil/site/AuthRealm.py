@@ -5,9 +5,9 @@ from twisted.web.resource import IResource, ErrorPage
 from twisted.web.util import DeferredResource
 from zope.interface import implementer
 
-from rapui.site.AuthCredentials import AuthCredentials
-from rapui.site.AuthUserDetails import IUserSession
-from rapui.site.RapuiResource import RapuiResource
+from txhttputil.site.AuthCredentials import AuthCredentials
+from txhttputil.site.AuthUserDetails import IUserSession
+from txhttputil.site.RapuiResource import BasicResource
 from .AuthResource import LoginResource, LoginSucceededResource
 
 logger = logging.getLogger(name="AuthRealm")
@@ -24,7 +24,7 @@ class RapuiAuthSessionWrapper(object):
     isLeaf = False
 
     def __init__(self,
-                 siteRootResource: RapuiResource,
+                 siteRootResource: BasicResource,
                  credentialChecker: AuthCredentials):
         self._siteRootResource = siteRootResource
         self._credentialChecker = credentialChecker

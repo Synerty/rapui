@@ -9,13 +9,13 @@ from twisted.python.filepath import FilePath
 from twisted.web._element import renderer, Element
 from twisted.web.template import XMLFile
 
-import rapui
+import txhttputil
 
 
-class RapuiLoginElement(Element):
-    xmlFileName = 'RapuiLoginTemplate.xml'
+class LoginElement(Element):
+    xmlFileName = 'LoginTemplate.xml'
     loader = XMLFile(FilePath(os.path.join(os.path.dirname(__file__), xmlFileName)))
-    rapuiPath = os.path.dirname(rapui.__file__)
+    rapuiPath = os.path.dirname(txhttputil.__file__)
 
     siteName = "RapUI"
 

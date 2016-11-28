@@ -7,10 +7,10 @@
  * Support : support@synerty.com
 """
 
-from rapui.site.ResourceUtil import RESOURCES
-from rapui.site.StaticFileResource import StaticFileResource
-from rapui.site.StaticFileMultiPath import StaticFileMultiPath
-from rapui.site.AuthUserDetails import AuthUserDetails
+from txhttputil.site.ResourceUtil import RESOURCES
+from txhttputil.site.StaticFileResource import StaticFileResource
+from txhttputil.site.StaticFileMultiPath import StaticFileMultiPath
+from txhttputil.site.AuthUserDetails import AuthUserDetails
 
 
 class RootResource(StaticFileResource):

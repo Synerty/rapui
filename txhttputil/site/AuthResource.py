@@ -14,7 +14,7 @@ from twisted.web._flatten import flattenString
 from twisted.web.resource import Resource
 from twisted.web.server import NOT_DONE_YET
 
-from rapui.login_page.RapuiLoginElement import RapuiLoginElement
+from txhttputil.login_page.RapuiLoginElement import LoginElement
 
 
 class LoginResource(Resource):
@@ -40,7 +40,7 @@ class LoginResource(Resource):
                 request.request.write(failure.printDetailedTraceback())
             request.finish()
 
-        d = flattenString(request, RapuiLoginElement(failed=failed))
+        d = flattenString(request, LoginElement(failed=failed))
         d.addCallbacks(write, error)
 
         return NOT_DONE_YET

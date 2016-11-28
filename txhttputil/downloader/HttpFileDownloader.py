@@ -17,7 +17,7 @@ from twisted.web._newclient import ResponseDone
 from twisted.web.client import Agent
 from twisted.web.http_headers import Headers
 
-from rapui.site.SpooledNamedTemporaryFile import SpooledNamedTemporaryFile
+from txhttputil.site.SpooledNamedTemporaryFile import SpooledNamedTemporaryFile
 
 logger = logging.getLogger(__name__)
 

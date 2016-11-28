@@ -6,10 +6,10 @@ from twisted.trial import unittest
 from twisted.web import server
 from twisted.web.resource import ErrorPage
 
-import rapui
-from rapui.downloader.HttpFileDownloader import HttpFileDownloader
-from rapui.site.FileUnderlayResource import FileUnderlayResource
-from rapui.util.LoggingUtil import setupLogging
+import txhttputil
+from txhttputil.downloader.HttpFileDownloader import HttpFileDownloader
+from txhttputil.site.FileUnderlayResource import FileUnderlayResource
+from txhttputil.util.LoggingUtil import setupLogging
 
 logger = logging.getLogger(__name__)
 setupLogging()
@@ -21,7 +21,7 @@ class FileUnderlayResourceTest(unittest.TestCase):
     def setUp(self):
         rootResource = FileUnderlayResource()
 
-        self.fsRoot = os.path.dirname(rapui.__file__)
+        self.fsRoot = os.path.dirname(txhttputil.__file__)
         rootResource.addFileSystemRoot(self.fsRoot)
 
         logger.info("Test file system root = %s", self.fsRoot)
@@ -59,8 +59,7 @@ class FileUnderlayResourceTest(unittest.TestCase):
         return d
 
     def testDowloadUnderlayFile2(self):
-        fileName = "/login_page/RapuiLoginElement.py"
-        realPath = self.fsRoot + fileName
+        fileName = "/login_page/LoginElement        realPath = self.fsRoot + fileName
 
         d = HttpFileDownloader(self.sitePath + fileName).run()
         d.addCallback(self._checkDownloadedResource,

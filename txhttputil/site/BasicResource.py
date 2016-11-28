@@ -25,7 +25,7 @@ FONT_EXTENSIONS = list(get_extensions_for_type('font'))
 
 
 @implementer(IResource)
-class RapuiResource:
+class BasicResource:
     """ RapUI Simple Resource
 
     This class is a node for the resource tree, It's a slightly simpler version of

@@ -14,9 +14,9 @@ import sys
 from twisted.internet import reactor, defer
 from twisted.web.resource import ErrorPage
 
-from rapui.site.FileUnderlayResource import FileUnderlayResource
-from rapui.site.SiteUtil import setupSite
-from rapui.util.LoggingUtil import setupLogging
+from txhttputil.site.FileUnderlayResource import FileUnderlayResource
+from txhttputil.site.SiteUtil import setupSite
+from txhttputil.util.LoggingUtil import setupLogging
 
 testUnicode = '''
 double hyphen :-( — “fancy quotes”

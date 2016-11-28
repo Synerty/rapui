@@ -1,5 +1,5 @@
-from rapui.site.AuthUserDetails import UserDetails, everyoneGroup
-from rapui.util.DeferUtil import maybeDeferredWrap
+from txhttputil.site.AuthUserDetails import UserDetails, everyoneGroup
+from txhttputil.util.DeferUtil import maybeDeferredWrap
 
 
 

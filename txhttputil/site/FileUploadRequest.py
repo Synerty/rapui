@@ -11,7 +11,7 @@ import logging
 
 from twisted.web import server
 
-from rapui.site.SpooledNamedTemporaryFile import SpooledNamedTemporaryFile
+from txhttputil.site.SpooledNamedTemporaryFile import SpooledNamedTemporaryFile
 
 logger = logging.getLogger(name=__name__)
 

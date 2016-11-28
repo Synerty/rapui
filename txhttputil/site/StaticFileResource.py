@@ -17,15 +17,15 @@ from wsgiref.handlers import format_date_time
 from twisted.internet.task import cooperate
 from twisted.web.server import NOT_DONE_YET
 
-from rapui.site.RapuiResource import RapuiResource
-from rapui.util.DeferUtil import deferToThreadWrap
+from txhttputil.site.RapuiResource import BasicResource
+from txhttputil.util.DeferUtil import deferToThreadWrap
 
 logger = logging.getLogger(__name__)
 
 FileData = namedtuple("FileData", ["fobj", "size", "cacheControl", "expires"])
 
 
-class StaticFileResource(RapuiResource):
+class StaticFileResource(BasicResource):
     """
     """
     isLeaf = True
@@ -33,7 +33,7 @@ class StaticFileResource(RapuiResource):
     def __init__(self, filePath: str,
                  expireMinutes: int = 30,
                  chunkSize: int = 128000):
-        RapuiResource.__init__(self)
+        BasicResource.__init__(self)
         self._filePath = filePath
         self.cancelDownload = False
         self.expireMinutes = expireMinutes

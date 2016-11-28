@@ -13,17 +13,17 @@ from twisted.internet import reactor
 from twisted.web import server
 from twisted.web.http import HTTPChannel
 
-from rapui.login_page.RapuiLoginElement import RapuiLoginElement
-from rapui.site.AuthCredentials import AllowAllAuthCredentials, AuthCredentials
-from rapui.site.AuthRealm import RapuiAuthSessionWrapper
-from rapui.site.FileUploadRequest import FileUploadRequest
-from rapui.site.RapuiResource import RapuiResource
+from txhttputil.login_page.RapuiLoginElement import LoginElement
+from txhttputil.site.AuthCredentials import AllowAllAuthCredentials, AuthCredentials
+from txhttputil.site.AuthRealm import RapuiAuthSessionWrapper
+from txhttputil.site.FileUploadRequest import FileUploadRequest
+from txhttputil.site.RapuiResource import BasicResource
 
 logger = logging.getLogger(__name__)
 
 
 def setupSite(name: str,
-              rootResource: RapuiResource,
+              rootResource: BasicResource,
               portNum: int = 8000,
               credentialChecker: AuthCredentials = AllowAllAuthCredentials()):
     ''' Setup Site
@@ -33,7 +33,7 @@ def setupSite(name: str,
     @return: Port object
     '''
 
-    RapuiLoginElement.siteName = name
+    LoginElement.siteName = name
 
     protectedResource = RapuiAuthSessionWrapper(rootResource, credentialChecker)
 

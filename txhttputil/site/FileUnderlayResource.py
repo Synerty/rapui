@@ -3,7 +3,7 @@ import os
 
 from twisted.web.resource import NoResource
 
-from rapui.site.RapuiResource import RapuiResource
+from txhttputil.site.RapuiResource import BasicResource
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +22,7 @@ IMAGE_EXTENSIONS = list(get_extensions_for_type('image'))
 FONT_EXTENSIONS = list(get_extensions_for_type('font'))
 
 
-class FileUnderlayResource(RapuiResource):
+class FileUnderlayResource(BasicResource):
     """
     This class resolves URLs into either a static file or a C{RapuiRequestDynamicRenderer}
 
@@ -38,7 +38,7 @@ class FileUnderlayResource(RapuiResource):
     acceptedExtensions += IMAGE_EXTENSIONS
 
     def __init__(self):
-        RapuiResource.__init__(self)
+        BasicResource.__init__(self)
 
         self._fileSystemRoots = []
 
@@ -49,14 +49,14 @@ class FileUnderlayResource(RapuiResource):
         # Optionally, Do some checking with userSession.userDetails.group
         # userSession = IUserSession(request.getSession())
 
-        resoureFromTree = RapuiResource.getChild(self, path, request)
+        resoureFromTree = BasicResource.getChild(self, path, request)
         if not isinstance(resoureFromTree, NoResource):
             return resoureFromTree
 
         # else, look for it in the file system
         filePath = self.getRealFilePath(os.path.join(path, *request.postpath))
         if filePath:
-            from rapui.site.StaticFileResource import StaticFileResource
+            from txhttputil.site.StaticFileResource import StaticFileResource
             return self._gzipIfRequired(StaticFileResource(filePath))
 
         return NoResource()
