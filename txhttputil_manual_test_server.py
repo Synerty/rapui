@@ -31,7 +31,7 @@ def main():
 
     rootResource.putChild(b"test", ErrorPage(200, "This path worked, /test", ""))
 
-    setupSite("RapUI Test Siteport", rootResource)
+    setupSite("txHttpUtil Test Siteport", rootResource)
 
     reactor.run()
 

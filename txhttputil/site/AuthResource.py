@@ -14,7 +14,7 @@ from twisted.web._flatten import flattenString
 from twisted.web.resource import Resource
 from twisted.web.server import NOT_DONE_YET
 
-from txhttputil.login_page.RapuiLoginElement import LoginElement
+from txhttputil.login_page.LoginElement import LoginElement
 
 
 class LoginResource(Resource):

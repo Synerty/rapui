@@ -39,10 +39,10 @@ class HttpFileDownloader:
 
         def cbResponse(response):
             if response.code == 200:
-                bodyDownloader = _RapuiHttpFileDownloaderBody(self._tmpDir)
+                bodyDownloader = _FileDownloaderBody(self._tmpDir)
             else:
-                bodyDownloader = _RapuiHttpBodyError(response.code,
-                                                     response.request.absoluteURI)
+                bodyDownloader = _BodyError(response.code,
+                                            response.request.absoluteURI)
             response.deliverBody(bodyDownloader)
             return bodyDownloader.deferred
 
@@ -51,7 +51,7 @@ class HttpFileDownloader:
         return d
 
 
-class _RapuiHttpFileDownloaderBody(Protocol):
+class _FileDownloaderBody(Protocol):
     def __init__(self, tmpDir: str = None):
         self._finishedDeferred = Deferred()
         self._tmpFile = SpooledNamedTemporaryFile(dir=tmpDir)
@@ -77,7 +77,7 @@ class _RapuiHttpFileDownloaderBody(Protocol):
         self._finishedDeferred.errback(reason)
 
 
-class _RapuiHttpBodyError(Protocol):
+class _BodyError(Protocol):
     def __init__(self, responseCode, responseUri):
         self._finishedDeferred = Deferred()
         self._responseCode = responseCode

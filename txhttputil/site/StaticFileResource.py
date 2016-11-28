@@ -17,7 +17,7 @@ from wsgiref.handlers import format_date_time
 from twisted.internet.task import cooperate
 from twisted.web.server import NOT_DONE_YET
 
-from txhttputil.site.RapuiResource import BasicResource
+from txhttputil.site.BasicResource import BasicResource
 from txhttputil.util.DeferUtil import deferToThreadWrap
 
 logger = logging.getLogger(__name__)

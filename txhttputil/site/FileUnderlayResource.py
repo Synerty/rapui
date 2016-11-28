@@ -3,7 +3,7 @@ import os
 
 from twisted.web.resource import NoResource
 
-from txhttputil.site.RapuiResource import BasicResource
+from txhttputil.site.BasicResource import BasicResource
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +24,7 @@ FONT_EXTENSIONS = list(get_extensions_for_type('font'))
 
 class FileUnderlayResource(BasicResource):
     """
-    This class resolves URLs into either a static file or a C{RapuiRequestDynamicRenderer}
+    This class resolves URLs into either a static file or a C{BasicResource}
 
     This is a multi level search :
     1) getChild, looking for resource in the resource tree

@@ -26,7 +26,7 @@ FONT_EXTENSIONS = list(get_extensions_for_type('font'))
 
 @implementer(IResource)
 class BasicResource:
-    """ RapUI Simple Resource
+    """ Basic Resource
 
     This class is a node for the resource tree, It's a slightly simpler version of
     C{twisted.web.resource.Resource}

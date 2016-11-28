@@ -7,16 +7,16 @@ from zope.interface import implementer
 
 from txhttputil.site.AuthCredentials import AuthCredentials
 from txhttputil.site.AuthUserDetails import IUserSession
-from txhttputil.site.RapuiResource import BasicResource
+from txhttputil.site.BasicResource import BasicResource
 from .AuthResource import LoginResource, LoginSucceededResource
 
-logger = logging.getLogger(name="AuthRealm")
+logger = logging.getLogger(name=__name__)
 
 __author__ = 'synerty'
 
 
 @implementer(IResource)
-class RapuiAuthSessionWrapper(object):
+class FormBasedAuthSessionWrapper(object):
     """
     Copied partly from C{twisted.web._auth.wrapper.HTTPAuthSessionWrapper}
     """
@@ -45,7 +45,7 @@ class RapuiAuthSessionWrapper(object):
             return self._siteRootResource
 
         # TRY Basic HTTP Authentication
-        # TODO, RapUI is using FORM based authentication instead
+        # TODO, txHttpUtil is using FORM based authentication instead
         # authheader = request.getHeader('authorization')
         # if authheader:
         #     factory, respString = self._selectParseHeader(authheader)
