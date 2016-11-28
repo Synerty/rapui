@@ -3,6 +3,7 @@ from distutils.core import setup
 setup(
     name='txhttputil',
     packages=['txhttputil', 'txhttputil.downloader', 'txhttputil.login_page', 'txhttputil.site', 'txhttputil.util'],
+    package_data={'txhttputil.login_page': ['*.xml']},
     version='0.1.1',
     description='Synerty utility classes for serving a static site with twisted.web with user permissions.',
     author='Synerty',
