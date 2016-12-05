@@ -3,7 +3,8 @@ import os
 
 from twisted.python.compat import nativeString
 from twisted.web.error import UnsupportedMethod
-from twisted.web.resource import EncodingResourceWrapper, IResource, NoResource
+from twisted.web.resource import EncodingResourceWrapper, IResource, NoResource, \
+    _computeAllowedMethods
 from twisted.web.server import GzipEncoderFactory
 from zope.interface import implementer
 
@@ -43,12 +44,36 @@ class BasicResource:
         """
         self.__children = {}
 
+    def getChildWithDefault(self, path, request):
+        """ Get Child With Default
+
+        This is the method queried by the site/server, if we implement this and then
+        only use getChild, we have greater control when something fails
+        @see C{FileUnderlayResource}
+
+
+        def getChildForRequest(resource, request):
+            # Traverse resource tree to find who will handle the request.
+            while request.postpath and not resource.isLeaf:
+                pathElement = request.postpath.pop(0)
+                request.prepath.append(pathElement)
+                resource = resource.getChildWithDefault(pathElement, request)
+            return resource
+
+        """
+        while True:
+            resource = self.getChild(path, request)
+            if not request.postpath or resource.isLeaf:
+                break
+            path = request.postpath.pop(0)
+            request.prepath.append(path)
+
+        return resource
+
     def getChild(self, path, request):
         if path in self.__children:
             return self.__children[path]
         return NoResource()
-
-    getChildWithDefault = getChild
 
     def putChild(self, path: bytes, child):
         if b'/' in path:
@@ -66,11 +91,10 @@ class BasicResource:
     def render(self, request):
         # Optionally, Do some checking with userSession.userDetails.group
         # userSession = IUserSession(request.getSession())
-        methodName = 'render_' + nativeString(request.method)
 
-        m = getattr(self, methodName, None)
+        m = getattr(self, 'render_' + nativeString(request.method), None)
         if not m:
-            raise UnsupportedMethod(methodName)
+            raise UnsupportedMethod(_computeAllowedMethods(self))
         return m(request)
 
     def render_HEAD(self, request):
