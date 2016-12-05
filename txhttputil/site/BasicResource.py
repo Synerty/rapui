@@ -57,6 +57,12 @@ class BasicResource:
         self.__children[path] = child
         child.server = self.server
 
+    def deleteChild(self, path: bytes):
+        if b'/' in path:
+            raise Exception("Path %s can not start or end with '/' ", path)
+
+        del self.__children[path]
+
     def render(self, request):
         # Optionally, Do some checking with userSession.userDetails.group
         # userSession = IUserSession(request.getSession())
