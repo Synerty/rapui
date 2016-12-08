@@ -84,11 +84,15 @@ class FileUnderlayResource(BasicResource):
             return resoureFromTree
 
         # else, look for it in the file system
-        filePath = self.getRealFilePath(os.path.join(path, *request.postpath).decode())
+        # We may get prepath=/file.js, path=file.js and postpath = [] if this is the root
+        # OR prepath=/somepath, path=somepath and postpath = ['things/file.js] otherwise
+        pathList = request.postpath if request.postpath else request.prepath
+        if pathList:
+            filePath = self.getRealFilePath(os.path.join(*pathList).decode())
 
-        if filePath:
-            from txhttputil.site.StaticFileResource import StaticFileResource
-            return self._gzipIfRequired(StaticFileResource(filePath))
+            if filePath:
+                from txhttputil.site.StaticFileResource import StaticFileResource
+                return self._gzipIfRequired(StaticFileResource(filePath))
 
         return NoResource()
 
