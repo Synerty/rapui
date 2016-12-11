@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-PACKAGE="vortexpy"
+PACKAGE="txhttputil"
 
 set -o nounset
 set -o errexit
@@ -29,7 +29,7 @@ echo "Setting version to $VER"
 sed -i "s;^package_version.*=.*;package_version = '${VER}';"  setup.py
 
 # Update the package version
-sed -i "s;.*version.*;__version__ = '${VER}';" vortex/__init__.py
+sed -i "s;.*version.*;__version__ = '${VER}';" ${PACKAGE}/__init__.py
 
 # Upload to test pypi
 python setup.py sdist upload -r pypitest
