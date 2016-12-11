@@ -43,5 +43,5 @@ git push --tags
 
 echo "If you're happy with this you can now run :"
 echo
-echo "python setup.py upload -r pypi"
+echo "python setup.py sdist upload -r pypi"
 echo
