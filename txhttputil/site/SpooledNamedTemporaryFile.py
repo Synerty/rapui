@@ -1,4 +1,4 @@
-from tempfile import SpooledTemporaryFile, NamedTemporaryFile
+from tempfile import SpooledTemporaryFile, NamedTemporaryFile, _TemporaryFileWrapper
 
 
 class SpooledNamedTemporaryFile(SpooledTemporaryFile):
@@ -28,3 +28,12 @@ class SpooledNamedTemporaryFile(SpooledTemporaryFile):
         """
         self.rollover()
         return self._file.name
+
+    @property
+    def namedTemporaryFile(self) -> _TemporaryFileWrapper:
+        """ Named Temporary File
+
+        Trying to access this property causes a rollover if required
+        """
+        self.rollover()
+        return self._file
