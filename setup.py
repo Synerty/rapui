@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 package_name = "txhttputil"
-package_version = '0.1.7'
+package_version = '0.1.8'
 
 setup(
     name='txhttputil',
