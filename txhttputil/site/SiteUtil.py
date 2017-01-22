@@ -8,6 +8,7 @@
 """
 
 import logging
+import platform
 
 from twisted.internet import reactor
 from twisted.web import server
@@ -48,8 +49,11 @@ def setupSite(name: str,
 
     sitePort = reactor.listenTCP(portNum, site)
 
-    import subprocess
-    ip = subprocess.getoutput("/sbin/ifconfig").split("\n")[1].split()[1][5:]
+    if platform.system() is not "Windows":
+        import subprocess
+        ip = subprocess.getoutput("/sbin/ifconfig").split("\n")[1].split()[1][5:]
+    else:
+        ip = "0.0.0.0"
 
     logger.info('%s is alive and listening on http://%s:%s', name, ip, sitePort.port)
     return sitePort
