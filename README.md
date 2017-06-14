@@ -10,10 +10,9 @@ Resource.putChild type resource tree.
 * Twisted HTTP File Downloader
 * Consistent request data, providing a Bytes IO like oboject and switching to a
 NamedTemporaryFile if fileno, or name is called, or the data exceeds 5mb.
+* Support for single page applications
 
 # TODO
-
-* Redirects from / to /index.html
 
 Unit tests for :
 * Creating resource trees

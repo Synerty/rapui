@@ -77,9 +77,6 @@ class FileUnderlayResource(BasicResource):
 
         resoureFromTree = BasicResource.getChild(self, path, request)
 
-        if isinstance(resoureFromTree, FileUnderlayResource):
-            return resoureFromTree.getChild(path, request)
-
         if not isinstance(resoureFromTree, NoResource):
             return resoureFromTree
 

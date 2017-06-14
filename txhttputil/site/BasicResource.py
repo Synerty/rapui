@@ -42,7 +42,7 @@ class BasicResource:
         """
         Initialize.
         """
-        self.__children = {}
+        self._children = {}
 
     def getChildWithDefault(self, path, request):
         """ Get Child With Default
@@ -61,32 +61,47 @@ class BasicResource:
             return resource
 
         """
+
+        resource = self
+
         while True:
-            resource = self.getChild(path, request)
-            if not request.postpath or resource.isLeaf:
+            resource = resource.getChild(path, request)
+
+            # If we've run into a dead end, return it.
+            if isinstance(resource, NoResource):
                 break
+
+            # If the resource is a leaf, this IS the resource we should render
+            if resource.isLeaf:
+                # Break before popping the path
+                break
+
+            # If there are no more paths to pop, this must be it
+            if not request.postpath:
+                break
+
             path = request.postpath.pop(0)
             request.prepath.append(path)
 
         return resource
 
     def getChild(self, path, request):
-        if path in self.__children:
-            return self.__children[path]
+        if path in self._children:
+            return self._children[path]
         return NoResource()
 
     def putChild(self, path: bytes, child):
         if b'/' in path:
             raise Exception("Path %s can not start or end with '/' ", path)
 
-        self.__children[path] = child
+        self._children[path] = child
         child.server = self.server
 
     def deleteChild(self, path: bytes):
         if b'/' in path:
             raise Exception("Path %s can not start or end with '/' ", path)
 
-        del self.__children[path]
+        del self._children[path]
 
     def render(self, request):
         # Optionally, Do some checking with userSession.userDetails.group
