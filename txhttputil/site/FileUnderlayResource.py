@@ -1,8 +1,7 @@
 import logging
 import os
-from typing import Union
-
 from twisted.web.resource import NoResource
+from typing import Union
 
 from txhttputil.site.BasicResource import BasicResource
 
@@ -58,6 +57,11 @@ class FileUnderlayResource(BasicResource):
 
     def getChildWithDefault(self, path, request):
         child = BasicResource.getChildWithDefault(self, path, request)
+
+        # If it's matched a file underlay resource, we need to ask it if it has any
+        # files.
+        if isinstance(child, FileUnderlayResource):
+            child = child.getChild(path, request)
 
         if not isinstance(child, NoResource) or not self._singlePageAppConfig:
             return child

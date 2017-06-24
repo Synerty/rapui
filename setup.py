@@ -1,11 +1,12 @@
-from distutils.core import setup
+from setuptools import setup
 
 package_name = "txhttputil"
 package_version = '0.1.10'
 
 setup(
     name='txhttputil',
-    packages=['txhttputil', 'txhttputil.downloader', 'txhttputil.login_page', 'txhttputil.site', 'txhttputil.util'],
+    packages=['txhttputil', 'txhttputil.downloader', 'txhttputil.login_page',
+              'txhttputil.site', 'txhttputil.util'],
     package_data={'txhttputil.login_page': ['*.xml']},
     version=package_version,
     description='Synerty utility classes for serving a static site with twisted.web with user permissions.',
