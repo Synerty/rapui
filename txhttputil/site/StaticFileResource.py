@@ -8,12 +8,14 @@
 """
 
 import logging
-import os
-from collections import namedtuple
+import mimetypes
 from datetime import date, timedelta
 from time import mktime
+from urllib.request import pathname2url
 from wsgiref.handlers import format_date_time
 
+import os
+from collections import namedtuple
 from twisted.internet.task import cooperate
 from twisted.web.server import NOT_DONE_YET
 
@@ -34,13 +36,14 @@ class StaticFileResource(BasicResource):
                  expireMinutes: int = 30,
                  chunkSize: int = 128000):
         BasicResource.__init__(self)
+        self._mimetype = mimetypes.guess_type(pathname2url(filePath))[0]
         self._filePath = filePath
         self.cancelDownload = False
         self.expireMinutes = expireMinutes
         self.chunkSize = chunkSize
 
     def render_GET(self, request):
-        # request.responseHeaders.setRawHeaders('content-type', ['text/css'])
+        request.responseHeaders.setRawHeaders('content-type', [self._mimetype])
         return self.serveStaticFileWithCache(request)
 
     def serveStaticFileWithCache(self, request):

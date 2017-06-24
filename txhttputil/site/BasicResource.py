@@ -1,5 +1,4 @@
 import logging
-import os
 
 from twisted.python.compat import nativeString
 from twisted.web.error import UnsupportedMethod
@@ -64,8 +63,17 @@ class BasicResource:
 
         resource = self
 
+        from txhttputil.site.FileUnderlayResource import FileUnderlayResource
+        fileUnderlayResourceStack = []
+
+        if isinstance(self, FileUnderlayResource):
+            fileUnderlayResourceStack.append((resource, [path] + request.postpath))
+
         while True:
             resource = resource.getChild(path, request)
+
+            if isinstance(resource, FileUnderlayResource):
+                fileUnderlayResourceStack.append((resource, list(request.postpath)))
 
             # If we've run into a dead end, return it.
             if isinstance(resource, NoResource):
@@ -82,6 +90,14 @@ class BasicResource:
 
             path = request.postpath.pop(0)
             request.prepath.append(path)
+
+        # Look back through the file resources and see if there are any matches
+        if isinstance(resource, NoResource):
+            while fileUnderlayResourceStack:
+                resource, postPath = fileUnderlayResourceStack.pop()
+                fileResource = resource.getFileResource(postPath)
+                if not isinstance(fileResource, NoResource):
+                    return fileResource
 
         return resource
 
@@ -121,4 +137,3 @@ class BasicResource:
             and resource.isGzipped):
             return EncodingResourceWrapper(resource, [GzipEncoderFactory()])
         return resource
-

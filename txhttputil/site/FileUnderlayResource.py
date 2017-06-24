@@ -1,7 +1,8 @@
 import logging
+from typing import Union
+
 import os
 from twisted.web.resource import NoResource
-from typing import Union
 
 from txhttputil.site.BasicResource import BasicResource
 
@@ -55,45 +56,19 @@ class FileUnderlayResource(BasicResource):
         self._fileSystemRoots = []
         self._singlePageAppConfig = None
 
-    def getChildWithDefault(self, path, request):
-        child = BasicResource.getChildWithDefault(self, path, request)
+    def getFileResource(self, postPath):
+        from txhttputil.site.StaticFileResource import StaticFileResource
 
-        # If it's matched a file underlay resource, we need to ask it if it has any
-        # files.
-        if isinstance(child, FileUnderlayResource):
-            child = child.getChild(path, request)
+        resourcePath = os.path.join(*postPath).decode() if postPath else None
+        filePath = self.getRealFilePath(resourcePath) if resourcePath else None
 
-        if not isinstance(child, NoResource) or not self._singlePageAppConfig:
-            return child
+        if filePath:
+            return self._gzipIfRequired(StaticFileResource(filePath))
 
-        strReqPath = request.path.decode().lower()
-        # Respond to anything but filenames that have a dot in them.
-        if not '.' in os.path.basename(strReqPath):
-            resource = self._getSinglePageAppResource()
-            if resource:
-                return resource
-
-        return NoResource()
-
-    def getChild(self, path, request):
-        # Optionally, Do some checking with userSession.userDetails.group
-        # userSession = IUserSession(request.getSession())
-
-        resoureFromTree = BasicResource.getChild(self, path, request)
-
-        if not isinstance(resoureFromTree, NoResource):
-            return resoureFromTree
-
-        # else, look for it in the file system
-        # We may get prepath=/file.js, path=file.js and postpath = [] if this is the root
-        # OR prepath=/somepath, path=somepath and postpath = ['things/file.js] otherwise
-        pathList = request.postpath if request.postpath else request.prepath
-        if pathList:
-            filePath = self.getRealFilePath(os.path.join(*pathList).decode())
-
-            if filePath:
-                from txhttputil.site.StaticFileResource import StaticFileResource
-                return self._gzipIfRequired(StaticFileResource(filePath))
+        if not resourcePath or not '.' in os.path.basename(resourcePath):
+            singlePageResource = self._getSinglePageAppResource()
+            if singlePageResource:
+                return singlePageResource
 
         return NoResource()
 
