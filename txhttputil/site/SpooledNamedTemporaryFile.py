@@ -30,6 +30,28 @@ class SpooledNamedTemporaryFile(SpooledTemporaryFile):
         return self._file.name
 
     @property
+    def delete(self):
+        """ Delete
+
+        Fill the file be automatically deleted
+
+        (Causes rollover)
+        """
+        self.rollover()
+        return self._file.delete
+
+    @delete.setter
+    def delete(self, value):
+        """ Delete Setter
+
+        Sets if the file will automatically be deleted by NamedTemporayFile
+
+        (Causes rollover)
+        """
+        self.rollover()
+        self._file.delete = value
+
+    @property
     def namedTemporaryFile(self) -> _TemporaryFileWrapper:
         """ Named Temporary File
 
