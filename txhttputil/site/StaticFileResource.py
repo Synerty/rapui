@@ -43,7 +43,7 @@ class StaticFileResource(BasicResource):
         self.chunkSize = chunkSize
 
     def render_GET(self, request):
-        request.responseHeaders.setRawHeaders('content-type', [self._mimetype])
+        request.responseHeaders.setRawHeaders(b'content-type', [self._mimetype])
         return self.serveStaticFileWithCache(request)
 
     def serveStaticFileWithCache(self, request):
