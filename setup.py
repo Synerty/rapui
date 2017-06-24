@@ -1,7 +1,7 @@
 from setuptools import setup
 
 package_name = "txhttputil"
-package_version = '0.1.12'
+package_version = '0.1.13'
 
 setup(
     name='txhttputil',
