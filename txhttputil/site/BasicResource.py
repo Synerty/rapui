@@ -92,7 +92,7 @@ class BasicResource:
             request.prepath.append(path)
 
         # Look back through the file resources and see if there are any matches
-        if isinstance(resource, NoResource):
+        if isinstance(resource, NoResource) or isinstance(resource, FileUnderlayResource):
             while fileUnderlayResourceStack:
                 resource, postPath = fileUnderlayResourceStack.pop()
                 fileResource = resource.getFileResource(postPath)
