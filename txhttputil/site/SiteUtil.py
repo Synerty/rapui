@@ -49,7 +49,7 @@ def setupSite(name: str,
 
     sitePort = reactor.listenTCP(portNum, site)
 
-    if platform.system() is not "Windows":
+    if platform.system() is not "Linux":
         import subprocess
         ip = subprocess.getoutput("/sbin/ifconfig").split("\n")[1].split()[1][5:]
     else:
