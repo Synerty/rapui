@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime
 
+import pytz
 from twisted.web.resource import IResource, ErrorPage
 from twisted.web.util import DeferredResource
 from zope.interface import implementer
@@ -76,7 +77,7 @@ class FormBasedAuthSessionWrapper(object):
                     return LoginResource()
 
                 userDetails.loggedIn = True
-                userDetails.loginDate = datetime.utcnow()
+                userDetails.loginDate = datetime.now(pytz.utc)
 
                 userSession = IUserSession(request.getSession())
                 userSession.userDetails = userDetails
