@@ -1,7 +1,7 @@
 from setuptools import setup
 
 package_name = "txhttputil"
-package_version = '0.2.3'
+package_version = '0.2.4'
 
 requirements = ["pytz"]
 
