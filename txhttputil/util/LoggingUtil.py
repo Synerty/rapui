@@ -9,12 +9,12 @@
 
 import logging
 
+LOG_FORMAT = '%(asctime)s %(levelname)s %(name)s:%(message)s'
+DATE_FORMAT = '%d-%b-%Y %H:%M:%S'
+
 
 def setupLogging():
-
-    logging.basicConfig(format='%(asctime)s %(levelname)s %(name)s:%(message)s'
-                        , datefmt='%d-%b-%Y %H:%M:%S'
-                        , level=logging.DEBUG)
+    logging.basicConfig(format=LOG_FORMAT, datefmt=DATE_FORMAT, level=logging.DEBUG)
 
     logging.getLogger('suds.client').setLevel(logging.INFO)
     logging.getLogger('suds.transport').setLevel(logging.INFO)
