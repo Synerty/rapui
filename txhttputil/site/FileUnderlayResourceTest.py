@@ -9,10 +9,13 @@ from twisted.web.resource import ErrorPage
 import txhttputil
 from txhttputil.downloader.HttpFileDownloader import HttpFileDownloader
 from txhttputil.site.FileUnderlayResource import FileUnderlayResource
-from txhttputil.util.LoggingUtil import setupLogging
 
 logger = logging.getLogger(__name__)
-setupLogging()
+
+
+LOG_FORMAT = '%(asctime)s %(levelname)s %(name)s:%(message)s'
+DATE_FORMAT = '%d-%b-%Y %H:%M:%S'
+logging.basicConfig(format=LOG_FORMAT, datefmt=DATE_FORMAT, level=logging.DEBUG)
 
 
 class FileUnderlayResourceTest(unittest.TestCase):
