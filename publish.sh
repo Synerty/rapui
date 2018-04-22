@@ -52,10 +52,8 @@ if [ $HAS_GIT ]; then
 fi
 
 #------------------------------------------------------------------------------
-# Upload to test pypi
-PIPY_ALIAS="${2-$PYPI_PUBLISH}"
 
-echo "Building sdist, Pushing to pypi index server PIPY_ALIAS"
+echo "Building sdist, Pushing to pypi index server "
 python setup.py sdist upload
 
 #------------------------------------------------------------------------------
