@@ -12,13 +12,13 @@ import platform
 
 from twisted.internet import reactor
 from twisted.web import server
-from twisted.web.http import HTTPChannel
 
 from txhttputil.login_page.LoginElement import LoginElement
 from txhttputil.site.AuthCredentials import AllowAllAuthCredentials, AuthCredentials
 from txhttputil.site.AuthSessionWrapper import FormBasedAuthSessionWrapper
 from txhttputil.site.BasicResource import BasicResource
 from txhttputil.site.FileUploadRequest import FileUploadRequest
+from txws import WebSocketUpgradeHTTPChannel
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +27,8 @@ def setupSite(name: str,
               rootResource: BasicResource,
               portNum: int = 8000,
               credentialChecker: AuthCredentials = AllowAllAuthCredentials(),
-              enableLogin=True):
+              enableLogin=True,
+              SiteProtocol=WebSocketUpgradeHTTPChannel):
     ''' Setup Site
     Sets up the web site to listen for connections and serve the site.
     Supports customisation of resources based on user details
@@ -44,7 +45,7 @@ def setupSite(name: str,
         protectedResource = rootResource
 
     site = server.Site(protectedResource)
-    site.protocol = HTTPChannel
+    site.protocol = SiteProtocol
     site.requestFactory = FileUploadRequest
 
     sitePort = reactor.listenTCP(portNum, site)
