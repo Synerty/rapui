@@ -3,7 +3,7 @@ from setuptools import setup
 package_name = "txhttputil"
 package_version = '0.2.9'
 
-requirements = ["pytz, txWS-Upgrade"]
+requirements = ["pytz", "txWS-Upgrade>=0.10.0"]
 
 setup(
     name='txhttputil',
