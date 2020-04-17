@@ -86,7 +86,7 @@ class StaticFileResource(BasicResource):
         # Cache control is disabled for gziped resources as they are chunk-encoded
         # request.setHeader("Cache-Control", fileData.cacheControl)
         # request.setHeader("Expires", fileData.expires)
-        request.setHeader(b"Content-Length", fileData.size)
+        request.setHeader(b"Content-Length", str(fileData.size))
         return fileData
 
     def _writeData(self, fileData, request):
