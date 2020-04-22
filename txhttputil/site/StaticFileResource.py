@@ -9,13 +9,13 @@
 
 import logging
 import mimetypes
+import os
+from collections import namedtuple
 from datetime import date, timedelta
 from time import mktime
 from urllib.request import pathname2url
 from wsgiref.handlers import format_date_time
 
-import os
-from collections import namedtuple
 from twisted.internet.task import cooperate
 from twisted.web.server import NOT_DONE_YET
 
@@ -36,11 +36,17 @@ class StaticFileResource(BasicResource):
                  expireMinutes: int = 30,
                  chunkSize: int = 128000):
         BasicResource.__init__(self)
-        self._mimetype = mimetypes.guess_type(pathname2url(filePath))[0]
         self._filePath = filePath
         self.cancelDownload = False
         self.expireMinutes = expireMinutes
         self.chunkSize = chunkSize
+
+        # Set the MIME Type
+        if filePath.endswith(".js.map"):
+            self._mimetype = 'application/json'
+        else:
+            self._mimetype = mimetypes.guess_type(pathname2url(filePath))[0]
+        assert self._mimetype, "Unknown mime type for: %s" % filePath
 
     def render_GET(self, request):
         request.responseHeaders.setRawHeaders(b'content-type', [self._mimetype])
