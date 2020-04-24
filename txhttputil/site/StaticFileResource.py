@@ -16,9 +16,9 @@ from time import mktime
 from urllib.request import pathname2url
 from wsgiref.handlers import format_date_time
 
+from filetype import filetype
 from twisted.internet.task import cooperate
 from twisted.web.server import NOT_DONE_YET
-
 from txhttputil.site.BasicResource import BasicResource
 from txhttputil.util.DeferUtil import deferToThreadWrap
 
@@ -42,10 +42,13 @@ class StaticFileResource(BasicResource):
         self.chunkSize = chunkSize
 
         # Set the MIME Type
-        if filePath.endswith(".js.map"):
-            self._mimetype = 'application/json'
+        fileTypeGuess = filetype.guess(filePath)
+        if fileTypeGuess:
+            self._mimetype = fileTypeGuess.mime
+
         else:
-            self._mimetype = mimetypes.guess_type(pathname2url(filePath))[0]
+            self._mimetype = mimetypes.guess_type(pathname2url(filePath), strict=False)[0]
+
         assert self._mimetype, "Unknown mime type for: %s" % filePath
 
     def render_GET(self, request):
