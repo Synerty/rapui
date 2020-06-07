@@ -1,4 +1,5 @@
 import logging
+from urllib.parse import urlencode
 
 from twisted.internet import reactor, protocol
 from twisted.internet.defer import succeed
@@ -6,11 +7,10 @@ from twisted.web._newclient import ResponseDone
 from twisted.web.client import Agent
 from twisted.web.iweb import IBodyProducer, UNKNOWN_LENGTH
 from twisted.web.server import NOT_DONE_YET
-from zope.interface import implementer
-
 from txhttputil.site.BasicResource import BasicResource
 from txhttputil.site.SpooledNamedTemporaryFile import SpooledNamedTemporaryFile
 from txhttputil.util.DeferUtil import vortexLogFailure
+from zope.interface import implementer
 
 logger = logging.getLogger(__name__)
 
@@ -68,6 +68,7 @@ class HttpResourceProxy(BasicResource):
         agent = Agent(reactor)
 
         url = "http://%s:%s%s" % (self._serverIp, self._serverPort, request.path.decode())
+        url += '?' + urlencode({k: v[0] for k, v in request.args.items()})
 
         headers = request.requestHeaders.copy()
         headers.removeHeader(b'host')  # The agent will reset these.
@@ -79,7 +80,7 @@ class HttpResourceProxy(BasicResource):
 
         def good(response):
             request.responseHeaders.setRawHeaders(
-                b'content-type',response.headers.getRawHeaders(b'content-type')
+                b'content-type', response.headers.getRawHeaders(b'content-type')
             )
             request.response_code = response.code
             response.deliverBody(_ResponseDataRelay(request))
