@@ -1,7 +1,7 @@
 from setuptools import setup
 
 package_name = "txhttputil"
-package_version = '0.3.6'
+package_version = '0.4.0'
 
 requirements = ["pytz", "txWS-Upgrade>=0.10.0", "filetype"]
 
