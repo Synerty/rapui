@@ -7,6 +7,7 @@
  * Support : support@synerty.com
 """
 
+import pem
 import logging
 import platform
 from typing import Optional
@@ -32,13 +33,10 @@ def setupSite(name: str,
               enableLogin=True,
               SiteProtocol=WebSocketUpgradeHTTPChannel,
               redirectFromHttpPort: Optional[int] = None,
-              sslCertFilePath: Optional[str] = None,
-              sslKeyFilePath: Optional[str] = None):
+              sslBundleFilePath: Optional[str] = None):
     """ Setup Site
     Sets up the web site to listen for connections and serve the site.
     Supports customisation of resources based on user details
-
-
 
     @return: Port object
     """
@@ -53,18 +51,17 @@ def setupSite(name: str,
     if enableLogin:
         protectedResource = FormBasedAuthSessionWrapper(rootResource, credentialChecker)
     else:
-        logger.critical("Resoruce protection disabled NO LOGIN REQUIRED")
+        logger.critical("Resource protection disabled NO LOGIN REQUIRED")
         protectedResource = rootResource
 
     site = server.Site(protectedResource)
     site.protocol = SiteProtocol
     site.requestFactory = FileUploadRequest
 
-    if sslKeyFilePath and sslCertFilePath:
+    if sslBundleFilePath:
         proto = 'https'
-        sitePort = reactor.listenSSL(portNum, site,
-                                     DefaultOpenSSLContextFactory(
-                                         sslKeyFilePath, sslCertFilePath))
+        contextFactory = pem.twisted.certificateOptionsFromFiles(sslBundleFilePath)
+        sitePort = reactor.listenSSL(portNum, site, contextFactory)
 
     else:
         proto = 'http'
