@@ -6,7 +6,10 @@ class SpooledNamedTemporaryFile(SpooledTemporaryFile):
     or StringIO to a real file when it exceeds a certain size or
     when a fileno or name is needed.
     """
+    tmpFilePath = None
 
+    def __init__(self, *args, **kwargs):
+        SpooledTemporaryFile.__init__(self, dir=self.tmpFilePath, *args, **kwargs)
 
     def rollover(self):
         if self._rolled:
@@ -38,6 +41,8 @@ class SpooledNamedTemporaryFile(SpooledTemporaryFile):
         (Causes rollover)
         """
         self.rollover()
+        if hasattr(self._file, '_closer'):
+            return self._file._closer.delete
         return self._file.delete
 
     @delete.setter
@@ -49,7 +54,10 @@ class SpooledNamedTemporaryFile(SpooledTemporaryFile):
         (Causes rollover)
         """
         self.rollover()
-        self._file.delete = value
+        if hasattr(self._file, '_closer'):
+            self._file._closer.delete = value
+        else:
+            self._file.delete = value
 
     @property
     def namedTemporaryFile(self) -> _TemporaryFileWrapper:
