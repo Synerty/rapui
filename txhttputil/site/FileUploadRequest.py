@@ -98,7 +98,7 @@ class FileUploadRequest(server.Request):
             # https://github.com/python/cpython/pull/8530.
             pdict["CONTENT-LENGTH"] = clength
             if key == b'application/x-www-form-urlencoded':
-                args.update(cgi.parse_qs(self.content.read(), 1))
+                args.update(parse_qs(self.content.read(), 1))
             elif key == mfd:
                 try:
                     if b'useLargeRequest' in args:

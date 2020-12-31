@@ -1,9 +1,9 @@
 from setuptools import setup
 
 package_name = "txhttputil"
-package_version = '0.5.0'
+package_version = '1.0.0'
 
-requirements = ["pytz", "txWS-Upgrade>=0.10.0", "filetype", "pem"]
+requirements = ["pytz", "txWS-Upgrade>=1.0.0", "filetype", "pem"]
 
 setup(
     name='txhttputil',
@@ -20,6 +20,6 @@ setup(
                   % (package_name, package_version)),
     keywords=['twisted', 'resource', 'file', 'download', 'synerty'],
     classifiers=[
-        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.9",
     ],
 )
