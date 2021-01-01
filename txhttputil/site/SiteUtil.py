@@ -21,7 +21,7 @@ from txhttputil.site.AuthCredentials import AllowAllAuthCredentials, AuthCredent
 from txhttputil.site.AuthSessionWrapper import FormBasedAuthSessionWrapper
 from txhttputil.site.FileUploadRequest import FileUploadRequest
 from txhttputil.site.RedirectToHttpsResource import RedirectToHttpsResource
-from txws import WebSocketUpgradeHTTPChannel
+from txwebsocket.txws import WebSocketUpgradeHTTPChannel
 
 logger = logging.getLogger(__name__)
 
