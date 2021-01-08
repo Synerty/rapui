@@ -9,7 +9,8 @@ class SpooledNamedTemporaryFile(SpooledTemporaryFile):
     tmpFilePath = None
 
     def __init__(self, *args, **kwargs):
-        SpooledTemporaryFile.__init__(self, dir=self.tmpFilePath, *args, **kwargs)
+        kwargs['dir'] = kwargs.pop('dir', self.tmpFilePath)
+        SpooledTemporaryFile.__init__(self, *args, **kwargs)
 
     def rollover(self):
         if self._rolled:
