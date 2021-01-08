@@ -1,7 +1,7 @@
 from setuptools import setup
 
 package_name = "txhttputil"
-package_version = '1.0.2'
+package_version = '1.0.3'
 
 requirements = ["pytz", "txwebsocket>=1.0.1", "filetype", "pem"]
 
