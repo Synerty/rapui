@@ -32,6 +32,10 @@ class StaticFileResource(BasicResource):
     """
     isLeaf = True
 
+    __STATIC_MIME_TYPES = [
+        (".js.map", 'application/json'),
+        (".js", 'application/javascript')
+    ]
     def __init__(self, filePath: str,
                  expireMinutes: int = 30,
                  chunkSize: int = 128000):
@@ -42,15 +46,17 @@ class StaticFileResource(BasicResource):
         self.chunkSize = chunkSize
 
         # Set the MIME Type
-        if filePath.endswith(".js.map"):
-            self._mimetype = 'application/json'
-        else:
-            fileTypeGuess = filetype.guess(filePath)
-            if fileTypeGuess:
-                self._mimetype = fileTypeGuess.mime
+        for extension, mimetype in self.__STATIC_MIME_TYPES:
+            if filePath.endswith(extension):
+                self._mimetype = mimetype
+                return
 
-            else:
-                self._mimetype = mimetypes.guess_type(pathname2url(filePath), strict=False)[0]
+        fileTypeGuess = filetype.guess(filePath)
+        if fileTypeGuess:
+            self._mimetype = fileTypeGuess.mime
+
+        else:
+            self._mimetype = mimetypes.guess_type(pathname2url(filePath), strict=False)[0]
 
         assert self._mimetype, "Unknown mime type for: %s" % filePath
 
